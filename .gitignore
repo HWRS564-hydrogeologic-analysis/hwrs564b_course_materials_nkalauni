@@ -211,3 +211,5 @@ cython_debug/
 *.list
 *.pcg
 *.csv
+my_data/
+*.zip
