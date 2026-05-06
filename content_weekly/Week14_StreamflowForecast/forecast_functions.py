@@ -98,6 +98,20 @@ def make_5day_forecast_longterm(mean_flow, forecast_date, n_days=5):
     return pd.DataFrame({'Forecast_cfs': mean_flow}, index=dates)
 
 
+def fit_monthly_avg_model(train_df):
+    """Return a dict mapping each calendar month (1-12) to mean streamflow over the training period."""
+    return train_df.groupby(train_df.index.month)['streamflow_cfs'].mean().to_dict()
+
+
+def make_5day_forecast_monthly(monthly_means, forecast_date, n_days=5):
+    """Return DataFrame with Forecast_cfs indexed by date using the historical monthly mean for each day."""
+    dates = pd.date_range(start=forecast_date, periods=n_days, freq='D')
+    return pd.DataFrame(
+        {'Forecast_cfs': [monthly_means[d.month] for d in dates]},
+        index=dates
+    )
+
+
 def compute_metrics(observed_cfs, predicted_cfs):
     """Return dict with RMSE, R², and NSE (Nash-Sutcliffe Efficiency)."""
     obs  = np.array(observed_cfs)
